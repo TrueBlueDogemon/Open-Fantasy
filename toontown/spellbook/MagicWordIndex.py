@@ -229,6 +229,21 @@ class ToggleOobe(MagicWord):
         base.oobe()
         return "Oobe mode has been toggled."
 
+class ToggleGhost(MagicWord):
+    aliases = ["ghost"]
+    desc = "Toggles ghost mode, which lets you turn invisible and move freely."
+    advancedDesc = "This Magic Word will toggle what is known as 'Out Of Body Experience' Mode, hence the name " \
+                   "'Oobe'. When this mode is active, you are able to move the camera around with your mouse- " \
+                   "though your camera will still follow your Toon."
+    execLocation = MagicWordConfig.EXEC_LOC_CLIENT
+
+    def handleWord(self, invoker, avId, toon, *args):
+        if toon.ghostMode == 1:
+            toon.b_setGhostMode(0)
+        else:
+            toon.b_setGhostMode(1)
+        return "Ghost mode has been toggled."
+
 
 class ToggleRun(MagicWord):
     aliases = ["run"]
