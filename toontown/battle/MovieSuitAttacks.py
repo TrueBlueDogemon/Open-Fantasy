@@ -2528,7 +2528,17 @@ def doSchmooze(attack):
 
 
 def doQuake(attack):
-    suitTrack = getSuitAnimTrack(attack)
+    suit = attack['suit']
+    if suit.style.body == 'c':
+        tauntIndex = attack['taunt']
+        taunt = getAttackTaunt(attack['name'], tauntIndex)
+        suitTrack = Sequence(Func(suit.setChatAbsolute, taunt, CFSpeech | CFTimeout),
+                             ActorInterval(suit, 'drop-react', 0, 1, 0.75, 0, 0, 75, 50),
+                             ActorInterval(suit, 'drop-react', 0, 1, 3.75, 0, 10, 40, 75),
+                             Parallel(ActorInterval(suit, 'neutral'),
+                                      Func(suit.clearChat)))
+    else:
+        suitTrack = getSuitAnimTrack(attack)
     damageAnims = [['slip-forward'], ['slip-forward', 0.01]]
     dodgeAnims = [['jump'], ['jump', 0.01], ['jump', 0.01]]
     toonTracks = getToonTracks(attack, damageDelay=1.8, splicedDamageAnims=damageAnims, dodgeDelay=1.1, splicedDodgeAnims=dodgeAnims, showMissedExtraTime=2.8, showDamageExtraTime=1.1)
