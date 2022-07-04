@@ -208,6 +208,8 @@ def doSuitAttack(attack):
         suitTrack = doPowerTie(attack)
     elif name == POWER_TRIP:
         suitTrack = doPowerTrip(attack)
+    elif name == PSYCHIC_BLAST:
+        suitTrack = doPsychicBlast(attack)
     elif name == QUAKE:
         suitTrack = doQuake(attack)
     elif name == RAZZLE_DAZZLE:
@@ -3876,6 +3878,17 @@ def doPeckingOrder(attack):
     toonTrack = getToonTrack(attack, damageDelay=4.2, splicedDamageAnims=damageAnims, dodgeDelay=2.8, dodgeAnimNames=['sidestep'], showMissedExtraTime=1.1)
     return Parallel(suitTrack, toonTrack, birdTracks)
 
+def doPsychicBlast(attack):
+    suit = attack['suit']
+    target = attack['target']
+    toon = target['toon']
+    BattleParticles.loadParticles()
+    blastEffect = BattleParticles.createParticleEffect('PsychicBlast')
+    particleTrack = ParticleInterval(blastEffect, toon, duration=0.5)
+    suitTrack = getSuitTrack(attack, playRate=0.75)
+    toonTrack = getToonTrack(attack, 0.5, ['slip-backward'], 0.5, ['cringe'])
+    soundTrack = getSoundTrack('ENC_cogfall_apart.ogg', delay=0.5, node=toon)
+    return Parallel(suitTrack, toonTrack, soundTrack, particleTrack)
 
 def doLegalStorm(attack):
     suit = attack['suit']

@@ -479,7 +479,7 @@ SuitAttributes = {'f': {'name': TTLocalizer.SuitFlunky,
                     (60, 75, 80, 85, 90),
                     (20, 20, 20, 20, 20)),
                    ('Schmooze',
-                    (12, 15, 18, 21, 24),
+                    (12, 15, 18, 20, 21),
                     (60, 70, 75, 80, 90),
                     (25, 25, 25, 25, 25)),
                    ('RazzleDazzle',
@@ -490,8 +490,8 @@ SuitAttributes = {'f': {'name': TTLocalizer.SuitFlunky,
                     (7, 8, 12, 15, 16),
                     (55, 65, 75, 85, 95),
                     (30, 30, 30, 30, 30)),
-                   ('TeeOff',
-                    (8, 9, 10, 11, 12),
+                   ('PsychicBlast',  # This move not only does base damage, but it has a chance to deal bonus damage.
+                    (12, 15, 16, 18, 20),
                     (70, 75, 80, 85, 95),
                     (10, 10, 10, 10, 10)))},
  'mh': {'name': TTLocalizer.SuitMrHollywood,
@@ -956,6 +956,7 @@ SuitAttacks = {'Audit': ('phone', ATK_TGT_SINGLE),
  'PoundKey': ('phone', ATK_TGT_SINGLE),
  'PowerTie': ('throw-paper', ATK_TGT_SINGLE),
  'PowerTrip': ('magic1', ATK_TGT_GROUP),
+ 'PsychicBlast': ('magic1', ATK_TGT_SINGLE),
  'Quake': ('quick-jump', ATK_TGT_GROUP),
  'RazzleDazzle': ('smile', ATK_TGT_SINGLE),
  'RedTape': ('throw-object', ATK_TGT_SINGLE),
@@ -1029,6 +1030,7 @@ PLAY_HARDBALL = list(SuitAttacks.keys()).index('PlayHardball')
 POUND_KEY = list(SuitAttacks.keys()).index('PoundKey')
 POWER_TIE = list(SuitAttacks.keys()).index('PowerTie')
 POWER_TRIP = list(SuitAttacks.keys()).index('PowerTrip')
+PSYCHIC_BLAST = list(SuitAttacks.keys()).index('PsychicBlast')
 QUAKE = list(SuitAttacks.keys()).index('Quake')
 RAZZLE_DAZZLE = list(SuitAttacks.keys()).index('RazzleDazzle')
 RED_TAPE = list(SuitAttacks.keys()).index('RedTape')

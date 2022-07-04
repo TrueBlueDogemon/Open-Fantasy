@@ -445,6 +445,8 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera(openShotDuration=2.4))
     elif name == POWER_TRIP:
         camTrack.append(defaultCamera(openShotDuration=1.1))
+    elif name == PSYCHIC_BLAST:
+        camTrack.append(defaultCamera())
     elif name == QUAKE:
         shakeIntensity = 5.15
         quake = 1
