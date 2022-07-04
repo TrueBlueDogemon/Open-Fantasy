@@ -273,6 +273,35 @@ class MaxToon(MagicWord):
 
         return f"Successfully maxed {toon.getName()}!"
 
+class SetInventory(MagicWord):
+    aliases = ["inventory", "restockGags"]
+    desc = "Restock your Toon's Gags."
+    execLocation = MagicWordConfig.EXEC_LOC_SERVER
+    accessLevel = 'ADMIN'
+
+    def handleWord(self, invoker, avId, toon, *args):
+        from toontown.toonbase import ToontownGlobals
+
+        toon.inventory.maxOutInv()
+        toon.d_setInventory(toon.inventory.makeNetString())
+
+        return f"Successfully restocked {toon.getName()}'s Gags!"
+
+class SetGagPouch(MagicWord):
+    aliases = ["pouch", "setPouch", "setMaxCarry", "carry"]
+    desc = "Gives your toon a gag pouch."
+    execLocation = MagicWordConfig.EXEC_LOC_SERVER
+    accessLevel = 'ADMIN'
+    arguments = [("amount", int, True)]
+
+    def handleWord(self, invoker, avId, toon, *args):
+        from toontown.toonbase import ToontownGlobals
+
+        amount = args[0]
+        toon.b_setMaxCarry(amount)
+
+        return f"Set {toon.getName()}'s Gag pouch to {amount} Gags!"
+
 # Instantiate all classes defined here to register them.
 # A bit hacky, but better than the old system
 for item in list(globals().values()):
