@@ -4,39 +4,38 @@
 
 # What is Toontown Fantasy?
  
-## Toontown Fantasy is a non-profit re-envisioning of Disney's Toontown Online! The game is built from the ground up using the latest technologies to make your experience more enjoyable and immersive!
+## Toontown Fantasy is a non-profit re-envisioning of Disney's Toontown Online! The game is built from the ground up using the latest technologies to make your experience more enjoyable and immersive! Come make your own Fantasy or play my idea of Toontown Fantasy for FREE today!
 
 ### Management Team:
-* THE PLAYER ZER0 aka Gracie T. Lovelight | Director/Owner
-* Pizza Taco Burger | Co-Owner
-
-### Community Team:
-
-* THE PLAYER ZER0 aka Gracie T. Lovelight | Community Manager
-* Redspade | Discord Moderator
++ THE PLAYER ZER0 aka Gracie T. Lovelight | Director/Owner
++ Pizza Taco Burger | Co-Owner
 
 ### Technical Team:
-* The Professor | Developer
-* ComradeNapCal | Developer
-* Something Random | Developer
-* Sighost | Developer
-* THE PLAYER ZER0 aka Gracie T. Lovelight | Developer
++ The Professor | Developer
++ Something Random | Developer
++ Sighost | Developer
++ THE PLAYER ZER0 aka Gracie T. Lovelight | Developer
 
 ### Creative Team:
-* SirDapperPenguin | 3D Modeler
-* Jardin | Artist
-* April | Artist
-* AiGenics | Story Writer
-* THE PLAYER ZER0 aka Gracie T. Lovelight | Story Writer
++ SirDapperPenguin | 3D Modeler
++ Jardin | Artist
++ April | Artist
++ AiGenics | Story Writer
++ THE PLAYER ZER0 aka Gracie T. Lovelight | Story Writer
 
 ### Special Thanks To:
-* Satire6 for releasing Pandora & Anesidora to the public!
-* Toontown Rewritten for reviving the spirit of Toontown and its community!
-* Disney Virtual Reality Studios and Schell Games for creating this ever-green video game!
-* Jesse Schell for fighting for Toontown Online's Official Return
++ Satire6 for releasing Pandora & Anesidora to the public!
++ Toontown Rewritten for reviving the spirit of Toontown and its community!
++ Disney Virtual Reality Studios and Schell Games for creating this ever-green video game!
++ Jesse Schell for fighting for Toontown Online's Official Return
 
 ### Contributors:
-* Battery on Discord for fixing the Tuple error!
++ Battery on Discord for helping me fix the Tuple error!
++ DarthM on Discord for various features including Credits, Genderless Toons, etc.
++ TrueBlueDogemon on Discord for implementing various Quality of Life features including Multiple SOS Cards.
++ Rocket for helping me implement Wide-Screen Support
+
+## - If you'd like to help out with features, create a branch and pull the code and implement it. Then join the Discord to tell me what you've changed and I'll review it and whether or not the code is good, I will approve the merge!
 
 [discordImg]: https://img.shields.io/badge/Discord-PLAYER%20ZER0%20STUDIOS-7289DA?logo=discord&logoWidth=18&colorB=7289DA&style=for-the-badge
 

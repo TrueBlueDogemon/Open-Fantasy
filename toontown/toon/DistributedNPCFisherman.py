@@ -1,4 +1,4 @@
-from pandac.PandaModules import *
+from panda3d.core import *
 from .DistributedNPCToonBase import *
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
@@ -6,6 +6,7 @@ from . import NPCToons
 from toontown.toonbase import TTLocalizer
 from toontown.fishing import FishSellGUI
 from direct.task.Task import Task
+
 
 class DistributedNPCFisherman(DistributedNPCToonBase):
 
@@ -46,12 +47,14 @@ class DistributedNPCFisherman(DistributedNPCToonBase):
 
     def initToonState(self):
         self.setAnimState('neutral', 1.05, None, None)
-        npcOrigin = self.cr.playGame.hood.loader.geom.find('**/npc_fisherman_origin_%s;+s' % self.posIndex)
+        npcOrigin = self.cr.playGame.hood.loader.geom.find(
+            '**/npc_fisherman_origin_%s;+s' % self.posIndex)
         if not npcOrigin.isEmpty():
             self.reparentTo(npcOrigin)
             self.clearMat()
         else:
-            self.notify.warning('announceGenerate: Could not find npc_fisherman_origin_' + str(self.posIndex))
+            self.notify.warning(
+                'announceGenerate: Could not find npc_fisherman_origin_' + str(self.posIndex))
         return
 
     def getCollSphereRadius(self):
@@ -74,6 +77,8 @@ class DistributedNPCFisherman(DistributedNPCToonBase):
         self.lerpLookAt(Point3(av.getPos(self)), time=0.5)
 
     def resetFisherman(self):
+        if not self.isLocalToon:
+            return
         self.ignoreAll()
         taskMgr.remove(self.uniqueName('popupFishGUI'))
         if self.lerpCameraSeq:
@@ -108,7 +113,9 @@ class DistributedNPCFisherman(DistributedNPCToonBase):
                 if self.fishGui:
                     self.fishGui.destroy()
                     self.fishGui = None
-            self.setChatAbsolute(TTLocalizer.STOREOWNER_TOOKTOOLONG, CFSpeech | CFTimeout)
+            self.setChatAbsolute(
+                TTLocalizer.STOREOWNER_TOOKTOOLONG,
+                CFSpeech | CFTimeout)
             self.resetFisherman()
         elif mode == NPCToons.SELL_MOVIE_START:
             self.av = base.cr.doId2do.get(avId)
@@ -116,16 +123,28 @@ class DistributedNPCFisherman(DistributedNPCToonBase):
                 self.notify.warning('Avatar %d not found in doId' % avId)
                 return
             else:
-                self.accept(self.av.uniqueName('disable'), self.__handleUnexpectedExit)
+                self.accept(
+                    self.av.uniqueName('disable'),
+                    self.__handleUnexpectedExit)
             self.setupAvatars(self.av)
             if self.isLocalToon:
                 camera.wrtReparentTo(render)
                 quat = Quat()
                 quat.setHpr((-150, -2, 0))
-                self.lerpCameraSeq = camera.posQuatInterval(1, Point3(-5, 9, base.localAvatar.getHeight() - 0.5), quat, other=self, blendType='easeOut', name=self.uniqueName('lerpCamera'))
+                self.lerpCameraSeq = camera.posQuatInterval(
+                    1,
+                    Point3(
+                        -5,
+                        9,
+                        base.localAvatar.getHeight() - 0.5),
+                    quat,
+                    other=self,
+                    blendType='easeOut',
+                    name=self.uniqueName('lerpCamera'))
                 self.lerpCameraSeq.start()
             if self.isLocalToon:
-                taskMgr.doMethodLater(1.0, self.popupFishGUI, self.uniqueName('popupFishGUI'))
+                taskMgr.doMethodLater(
+                    1.0, self.popupFishGUI, self.uniqueName('popupFishGUI'))
         elif mode == NPCToons.SELL_MOVIE_COMPLETE:
             chatStr = TTLocalizer.STOREOWNER_THANKSFISH
             self.setChatAbsolute(chatStr, CFSpeech | CFTimeout)
@@ -137,7 +156,9 @@ class DistributedNPCFisherman(DistributedNPCToonBase):
                 return
             else:
                 numFish, totalNumFish = extraArgs
-                self.setChatAbsolute(TTLocalizer.STOREOWNER_TROPHY % (numFish, totalNumFish), CFSpeech | CFTimeout)
+                self.setChatAbsolute(
+                    TTLocalizer.STOREOWNER_TROPHY %
+                    (numFish, totalNumFish), CFSpeech | CFTimeout)
             self.resetFisherman()
         elif mode == NPCToons.SELL_MOVIE_NOFISH:
             chatStr = TTLocalizer.STOREOWNER_NOFISH

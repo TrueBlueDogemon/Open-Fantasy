@@ -1,4 +1,4 @@
-from pandac.PandaModules import *
+from panda3d.core import *
 from .DistributedNPCToonBase import *
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
@@ -7,12 +7,13 @@ from toontown.toonbase import TTLocalizer
 from direct.distributed import DistributedObject
 from toontown.quest import QuestParser
 
+
 class DistributedNPCBlocker(DistributedNPCToonBase):
 
     def __init__(self, cr):
         DistributedNPCToonBase.__init__(self, cr)
         self.cSphereNodePath.setScale(4.5, 1.0, 6.0)
-        self.isLocalToon = 1
+        self.isLocalToon = 0
         self.movie = None
         return
 
@@ -42,6 +43,9 @@ class DistributedNPCBlocker(DistributedNPCToonBase):
         self.notify.warning('unexpected exit')
 
     def resetBlocker(self):
+        if not self.isLocalToon:
+            return
+
         self.cSphereNode.setCollideMask(BitMask32())
         if hasattr(self, 'movie') and self.movie:
             self.movie.cleanup()
@@ -61,7 +65,8 @@ class DistributedNPCBlocker(DistributedNPCToonBase):
         if mode == NPCToons.BLOCKER_MOVIE_CLEAR:
             return
         elif mode == NPCToons.BLOCKER_MOVIE_START:
-            self.movie = QuestParser.NPCMoviePlayer('tutorial_blocker', base.localAvatar, self)
+            self.movie = QuestParser.NPCMoviePlayer(
+                'tutorial_blocker', base.localAvatar, self)
             self.movie.play()
         elif mode == NPCToons.BLOCKER_MOVIE_TIMEOUT:
             return
