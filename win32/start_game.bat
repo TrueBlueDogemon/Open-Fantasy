@@ -5,6 +5,7 @@ title Open-Fantasy Game Launcher
 echo Choose your connection method!
 echo.
 echo #1 - Offline Mode
+echo #2 - Custom Server
 echo.
 
 :selection
@@ -14,39 +15,33 @@ set /P INPUT=Selection:
 
 if %INPUT%==1 (
     set TT_GAMESERVER=127.0.0.1
+) elif INPUT=2 (
+    set /P TT_GAMESERVER="Gameserver: "
 ) else (
+    echo Oops! Try selecting again.
     goto selection
 )
 
 echo.
 
-if %INPUT%==1 (
+    set LOGIN_TOKEN=dev
     set /P LOGIN_TOKEN="Username: "
-) else (
-    set /P LOGIN_TOKEN=Username: 
-)
 
 echo.
 
 echo ===============================
 echo Starting Toontown Fantasy
 
-if %INPUT%==1 (
-    echo Username: %ttUsername%
-) else (
-    echo Username: %TT_PLAYCOOKIE%
-)
-
+echo Username: %LOGIN_TOKEN%
 echo Gameserver: %TT_GAMESERVER%
+
 echo ===============================
 
 cd ../
 
 :main
-if %INPUT%==1 (
-    "C:\Panda3D-1.11.0-x64\python\ppython.exe" -m toontown.launcher.QuickStartLauncher
-)
 
+"C:\Panda3D-1.11.0-x64\python\ppython.exe" -m toontown.launcher.QuickStartLauncher
 pause
 
 goto main
