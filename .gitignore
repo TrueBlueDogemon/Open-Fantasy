@@ -23,3 +23,5 @@ news/
 Housekeeper/
 *.txt
 *.cfg
+sign/
+sign/texture.jpg

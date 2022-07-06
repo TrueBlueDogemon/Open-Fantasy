@@ -18,6 +18,7 @@ from direct.controls.GravityWalker import GravityWalker
 from direct.controls.ObserverWalker import ObserverWalker
 from direct.controls.SwimWalker import SwimWalker
 from direct.controls.TwoDWalker import TwoDWalker
+from toontown.toon.OrbitalCamera import OrbitCamera
 
 
 class LocalAvatar(DistributedAvatar.DistributedAvatar,
@@ -85,6 +86,10 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar,
         self.showNametag2d()
         self.setPickable(0)
         self.posCameraSeq = None
+        self.orbitalCamera = OrbitCamera(self)
+        self.onGoingNudge = False
+        self.__cameraHasBeenMoved = None
+        self.__lastPosWrtRender = None
         return
 
     def useSwimControls(self):
@@ -513,11 +518,11 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar,
                                  Point3(0.0, camHeight, camHeight * 4.0),
                                  Point3(0.0, camHeight, camHeight * -1.0),
                                  0),
-                                (Point3(0.0, 0.5, camHeight),
-                                 defLookAt,
-                                 Point3(0.0, camHeight, camHeight * 1.33),
-                                 Point3(0.0, camHeight, camHeight * 0.66),
-                                 1),
+                                # (Point3(0.0, 0.5, camHeight),
+                                #  defLookAt,
+                                #  Point3(0.0, camHeight, camHeight * 1.33),
+                                #  Point3(0.0, camHeight, camHeight * 0.66),
+                                #  1),
                                 (Point3(5.7 * heightScaleFactor, 7.65 * heightScaleFactor, camHeight + 2.0),
                                  Point3(0.0, 1.0, camHeight),
                                  Point3(0.0, 1.0, camHeight * 4.0),
@@ -747,16 +752,43 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar,
         self.__geom = geom
 
     def startUpdateSmartCamera(self, push=1):
+        """
+        Spawn a task to update the smart camera every frame
+        """
         if self._smartCamEnabled:
             LocalAvatar.notify.warning(
                 'redundant call to startUpdateSmartCamera')
             return
-        self._smartCamEnabled = True
+
+
+
+
+
+
         self.__floorDetected = 0
+
+     
         self.__cameraHasBeenMoved = 0
+
+        
         self.recalcCameraSphere()
+
+
         self.initCameraPositions()
         self.setCameraPositionByIndex(self.cameraIndex)
+        self.orbitalCamera.start()
+
+        self.cTrav.addCollider(self.ccSphereNodePath, self.camPusher)
+        
+        self.ccTravOnFloor.addCollider(self.ccRay2NodePath,
+                                       self.camFloorCollisionBroadcaster)
+
+        taskName = self.taskName("updateSmartCamera")
+        taskMgr.remove(taskName)
+        taskMgr.add(self.updateSmartCamera, taskName, priority=47)
+
+        # self.enableSmartCameraViews()
+        return
         self.posCamera(0, 0.0)
         self.__instantaneousCamPos = camera.getPos()
         if push:
@@ -774,11 +806,14 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar,
         self.enableSmartCameraViews()
 
     def stopUpdateSmartCamera(self):
+        self.orbitalCamera.stop()
+        return
         if not self._smartCamEnabled:
             LocalAvatar.notify.warning(
                 'redundant call to stopUpdateSmartCamera')
             return
         self.disableSmartCameraViews()
+
         self.cTrav.removeCollider(self.ccSphereNodePath)
         self.ccTravOnFloor.removeCollider(self.ccRay2NodePath)
         if not base.localAvatar.isEmpty():
@@ -788,6 +823,8 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar,
         self._smartCamEnabled = False
 
     def updateSmartCamera(self, task):
+        if not hasattr(self, 'ccTrav'):
+            return Task.done
         if not self.__camCollCanMove and not self.__cameraHasBeenMoved:
             if self.__lastPosWrtRender == camera.getPos(render):
                 if self.__lastHprWrtRender == camera.getHpr(render):
@@ -804,8 +841,9 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar,
                     self.camCollisionQueue.getEntry(0))
             if not self.__onLevelGround:
                 self.handleCameraFloorInteraction()
-        if not self.__idealCameraObstructed:
-            self.nudgeCamera()
+        # this breaks camera
+        # if not self.__idealCameraObstructed:
+        #     self.nudgeCamera()
         if not self.__disableSmartCam:
             self.ccPusherTrav.traverse(self.__geom)
             self.putCameraFloorRayOnCamera()
@@ -818,14 +856,15 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar,
         camera.lookAt(lookAt)
 
     def nudgeCamera(self):
-        CLOSE_ENOUGH = 0.1
+        self.onGoingNudge = True
+        CLOSE_ENOUGH = 95
         curCamPos = self.__instantaneousCamPos
         curCamHpr = camera.getHpr()
-        targetCamPos = self.getCompromiseCameraPos()
-        targetCamLookAt = self.getLookAtPoint()
+        targetCamPos = (0, -9, 0)
+        targetCamLookAt = (0, 1.5, 0) 
         posDone = 0
         if Vec3(curCamPos - targetCamPos).length() <= CLOSE_ENOUGH:
-            camera.setPos(targetCamPos)
+            # camera.setPos(targetCamPos)
             posDone = 1
         camera.setPos(targetCamPos)
         camera.lookAt(targetCamLookAt)
@@ -834,6 +873,7 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar,
         if Vec3(curCamHpr - targetCamHpr).length() <= CLOSE_ENOUGH:
             hprDone = 1
         if posDone and hprDone:
+            self.onGoingNudge = False
             return
         lerpRatio = 0.15
         lerpRatio = 1 - pow(1 - lerpRatio, globalClock.getDt() * 30.0)
@@ -849,7 +889,7 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar,
     def popCameraToDest(self):
         newCamPos = self.getCompromiseCameraPos()
         newCamLookAt = self.getLookAtPoint()
-        self.positionCameraWithPusher(newCamPos, newCamLookAt)
+        # self.positionCameraWithPusher(newCamPos, newCamLookAt)
         self.__instantaneousCamPos = camera.getPos()
 
     def handleCameraObstruction(self, camObstrCollisionEntry):
@@ -1151,7 +1191,7 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar,
                 self.lastNeedH = needH
         else:
             self.lastNeedH = None
-        action = self.setSpeed(speed, rotSpeed)
+        action = self.setSpeed(speed, rotSpeed, slideSpeed)
         if action != self.lastAction:
             self.lastAction = action
             if self.emoteTrack:
@@ -1294,3 +1334,6 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar,
 
     def canChat(self):
         return 0
+
+    def getGeom(self):
+         return self.__geom
