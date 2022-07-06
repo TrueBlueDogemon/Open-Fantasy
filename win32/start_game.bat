@@ -1,9 +1,5 @@
 @echo off
 
-start start_astron_server.bat
-start start_uberdog_server.bat
-start start_ai_server.bat
-
 title Open-Fantasy Game Launcher
 
 echo Choose your connection method!
