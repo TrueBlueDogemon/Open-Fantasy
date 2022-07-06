@@ -1,15 +1,17 @@
 from panda3d.core import *
 from . import ShtikerPage
+from toontown.toonbase import TTLocalizer, ToontownGlobals
 from toontown.toontowngui import TTDialog
 from direct.gui.DirectGui import *
-from toontown.toonbase import TTLocalizer
 from . import DisplaySettingsDialog
 from direct.task import Task
 from otp.speedchat import SpeedChat
 from otp.speedchat import SCColorScheme
 from otp.speedchat import SCStaticTextTerminal
 from otp.otpbase import PythonUtil
+import webbrowser
 from direct.directnotify import DirectNotifyGlobal
+
 speedChatStyles = ((2000,
                     (200 / 255.0, 60 / 255.0, 229 / 255.0),
                     (200 / 255.0, 135 / 255.0, 255 / 255.0),
@@ -331,6 +333,20 @@ class OptionsTabPage(DirectFrame):
                 2 *
                 textRowHeight +
                 0.025))
+        self.BugReportButton = DirectLabel(
+            parent=self,
+            relief=None,
+            text='',
+            text_align=TextNode.ALeft,
+            text_scale=options_text_scale,
+            text_wordwrap=15,
+            pos=(
+                leftMargin,
+                0,
+                textStartHeight -
+                2 *
+                textRowHeight +
+                0.025))
         self.ToonChatSounds_Label.setScale(0.9)
         self.Music_toggleButton = DirectButton(
             parent=self,
@@ -429,6 +445,10 @@ class OptionsTabPage(DirectFrame):
                 textRowHeight *
                 5),
             command=self.__doDisplaySettings)
+        self.BugReportButton = DirectButton(parent=self, relief=None, text="Report Bug", text_pos=(0, -0.01), text_fg=(0, 0, 0, 1), text_scale=(0.045), image=(
+                                                                                     guiButton.find('**/QuitBtn_UP'),
+                guiButton.find('**/QuitBtn_DN'),
+                guiButton.find('**/QuitBtn_RLVR')), image3_color=Vec4(1, 1, 1, 0.5), scale=(1.0, 1.0, 1.0), pos=(-0.5, 0.5, buttonbase_ycoord - textRowHeight * 7), command=self.showReportNotice)
         self.speedChatStyleLeftArrow = DirectButton(parent=self, relief=None, image=(gui.find('**/Horiz_Arrow_UP'),
                                                                                      gui.find(
                                                                                          '**/Horiz_Arrow_DN'),
@@ -523,6 +543,7 @@ class OptionsTabPage(DirectFrame):
         self.DisplaySettingsButton.destroy()
         self.speedChatStyleLeftArrow.destroy()
         self.speedChatStyleRightArrow.destroy()
+        self.BugReportButton.destroy()
         del self.exitButton
         del self.SoundFX_Label
         del self.Music_Label
@@ -539,6 +560,8 @@ class OptionsTabPage(DirectFrame):
         self.speedChatStyleText.destroy()
         del self.speedChatStyleText
         self.currentSizeIndex = None
+        if self.dialog:
+            self.dialog.hide()
         return
 
     def __doToggleMusic(self):
@@ -778,6 +801,15 @@ class OptionsTabPage(DirectFrame):
             base.cr._userLoggingOut = True
             messenger.send(self._parent.doneEvent)
 
+    def showReportNotice(self):
+        self.dialog = TTDialog.TTDialog(style=TTDialog.YesNo, text="WARNING!\n\nIn order to report the bug, you have to open your web browser. It is an external link. You must fill out the Issue with the bug, how to replicate, add your logs, and screenshots in order for us to fully understand!", command=self.confirmBugReport)
+        self.dialog.show()
+
+    def confirmBugReport(self, value):
+        if value > 0:
+            webbrowser.open(ToontownGlobals.BugReportSite, new=2, autoraise=True)
+        self.dialog.hide()
+        return
 
 class CodesTabPage(DirectFrame):
     notify = DirectNotifyGlobal.directNotify.newCategory('CodesTabPage')
@@ -917,9 +949,6 @@ class CodesTabPage(DirectFrame):
                 1,
                 1),
             command=self.__hideResultPanel)
-        closeButtonGui.removeNode()
-        cdrGui.removeNode()
-        submitButtonGui.removeNode()
         return
 
     def enter(self):
@@ -1020,3 +1049,5 @@ class CodesTabPage(DirectFrame):
         self.codeInput['state'] = DGG.NORMAL
         self.codeInput['focus'] = 1
         self.submitButton['state'] = DGG.NORMAL
+
+    BugReportSite = 'https://www.github.com/ThePlayerZero/Open-Fantasy/issues/new'

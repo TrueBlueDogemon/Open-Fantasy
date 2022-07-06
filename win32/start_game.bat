@@ -39,7 +39,7 @@ echo Starting Toontown Fantasy
 if %INPUT%==1 (
     echo Username: %LOGIN_TOKEN%
 ) else (
-    echo Username: %TT_PLAYCOOKIE%
+    echo Username: %LOGIN_TOKEN%
 )
 
 echo Gameserver: %TT_GAMESERVER%
