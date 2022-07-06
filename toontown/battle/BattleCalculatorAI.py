@@ -1339,8 +1339,8 @@ class BattleCalculatorAI:
                             theSuit.dna.name, theSuit.getLevel(), atkType)
                         result = atkInfo['hp']
                         if atkInfo['name'] == 'PsychicBlast':
-                            bonusChance = random.randint(1, 7)
-                            if bonusChance > 3:
+                            bonusChance = random.randint(1, 6)
+                            if bonusChance >= 4:
                                 result = result + round(toon.getMaxHp() * 0.1)
             targetIndex = self.battle.activeToons.index(toonId)
             attack[SUIT_HP_COL][targetIndex] = result
