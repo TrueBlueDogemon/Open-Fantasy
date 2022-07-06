@@ -6377,7 +6377,7 @@ def doPsychicBlast(attack):
     toon = target['toon']
     BattleParticles.loadParticles()
     blastEffect = BattleParticles.createParticleEffect('PsychicBlast')
-    particleTrack = ParticleInterval(blastEffect, toon, duration=1.0)
+    particleTrack = ParticleInterval(blastEffect, toon, duration=1.0, cleanup=True)
     suitTrack = getSuitTrack(attack, playRate=0.75)
     toonTrack = getToonTrack(attack, 0.5, ['slip-backward'], 0.5, ['cringe'])
     soundTrack = getSoundTrack('ENC_cogfall_apart.ogg', delay=0.5, node=toon)
